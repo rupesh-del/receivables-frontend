@@ -46,8 +46,29 @@ body, html {
   top: 0;
   box-shadow: 3px 0px 10px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
+  transition: all 0.3s ease-in-out;
 }
 
+/* 📌 Responsive Sidebar */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 60px; /* Collapse sidebar */
+    overflow: hidden;
+  }
+
+  .sidebar ul li {
+    text-align: center;
+    padding: 15px 5px;
+  }
+
+  .sidebar ul li a {
+    flex-direction: column;
+    gap: 0;
+    font-size: 12px;
+  }
+}
+
+/* Sidebar Navigation */
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -77,7 +98,22 @@ body, html {
 .content {
   margin-left: 260px;
   padding: 30px;
-  flex: 1; /* This ensures content takes full height */
+  flex: 1;
+}
+
+/* 📌 Responsive Content */
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 70px; /* Adjust for collapsed sidebar */
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0; /* Full width for small screens */
+    padding: 15px;
+  }
 }
 
 /* ========================= */
@@ -94,6 +130,7 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* ========================= */
@@ -124,6 +161,7 @@ body, html {
   display: flex;
   gap: 20px;
   margin-top: 20px;
+  flex-wrap: wrap; /* Ensures wrapping on small screens */
 }
 
 .summary-card {
@@ -135,12 +173,25 @@ body, html {
   font-size: 18px;
   font-weight: bold;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 220px; /* Prevents shrinking */
 }
 
 .summary-card p {
   font-size: 24px;
   margin: 10px 0 0;
   font-weight: bold;
+}
+
+/* Responsive Summary Cards */
+@media (max-width: 768px) {
+  .summary-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .summary-card {
+    width: 90%;
+  }
 }
 
 /* Card Colors */
@@ -189,6 +240,13 @@ body, html {
   background: #e9ecef;
 }
 
+/* Make Lists Scrollable */
+@media (max-width: 600px) {
+  .recent-clients ul {
+    overflow-x: auto;
+  }
+}
+
 /* ========================= */
 /* 📌 Footer Styling (Now Fixed) */
 /* ========================= */
@@ -204,4 +262,12 @@ body, html {
   position: relative;
   bottom: 0;
   flex-shrink: 0;
+}
+
+/* Responsive Footer */
+@media (max-width: 600px) {
+  .footer {
+    font-size: 12px;
+    padding: 10px;
+  }
 }

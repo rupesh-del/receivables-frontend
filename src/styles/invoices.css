@@ -1,6 +1,11 @@
 /* ========================= */
 /* 📌 Table Aesthetics        */
 /* ========================= */
+.invoices-table-container {
+  width: 100%;
+  overflow-x: auto; /* Enables scrolling on small screens */
+}
+
 .invoices-table {
   width: 100%;
   border-collapse: collapse;
@@ -50,42 +55,28 @@
   color: #444;
 }
 
-.status {
-  font-size: 12px;
-  font-weight: bold;
-  padding: 3px 10px;
-  border-radius: 20px;
-  color: white;
-  text-align: center;
-  margin-top: 4px;
-  display: inline-block;
-  width: fit-content;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-}
-/* Fix Amount/Status Overlapping */
 .amount-status-cell {
   text-align: center;
-  min-width: 160px; /* Ensure enough space for Amount & Status */
+  min-width: 160px; /* Ensure enough space */
 }
-
 
 .amount-status-wrapper {
   display: flex;
-  justify-content: space-between; /* Align amount and status side by side */
+  justify-content: center; /* Centering amount and status */
   align-items: center;
-  gap: 10px; /* Space between amount and status */
+  gap: 10px;
   font-weight: bold;
   font-size: 14px;
   color: #444;
   width: 100%;
 }
 
-/* Style for Amount */
 .amount {
   font-size: 14px;
   font-weight: bold;
   white-space: nowrap;
 }
+
 /* Status Badge */
 .status {
   font-size: 12px;
@@ -99,23 +90,13 @@
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Outstanding - Orange */
-.status.outstanding {
-  background-color: #ff9800;
-}
-
-/* Paid - Green */
-.status.paid {
-  background-color: #28a745;
-}
-
-/* Overdue - Red */
-.status.overdue {
-  background-color: #dc3545;
-}
+/* Status Colors */
+.status.outstanding { background-color: #ff9800; }
+.status.paid { background-color: #28a745; }
+.status.overdue { background-color: #dc3545; }
 
 /* ========================= */
-/* 📌 Action Buttons Fix      */
+/* 📌 Action Buttons         */
 /* ========================= */
 .action-buttons {
   display: flex;
@@ -134,30 +115,16 @@
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.edit-btn {
-  background: #007bff;
-  color: white;
-}
+.edit-btn { background: #007bff; color: white; }
+.delete-btn { background: #ff4d4d; color: white; }
 
-.delete-btn {
-  background: #ff4d4d;
-  color: white;
-}
+.edit-btn:hover { background: #0056b3; transform: scale(1.05); }
+.delete-btn:hover { background: #cc0000; transform: scale(1.05); }
 
-.edit-btn:hover {
-  background: #0056b3;
-  transform: scale(1.05);
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.delete-btn:hover {
-  background: #cc0000;
-  transform: scale(1.05);
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
 /* ✅ Clickable Rows */
 .clickable-row {
   cursor: pointer;
@@ -168,40 +135,17 @@
   background-color: #f1f1f1;
 }
 
-/* ✅ Action Buttons - Prevent Click Propagation */
-.action-buttons {
-  display: flex;
-  gap: 5px;
-}
+/* Responsive Action Buttons */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
 
-.edit-btn, .delete-btn {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  transition: background 0.3s ease-in-out;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.edit-btn {
-  background: #007bff;
-  color: white;
-}
-
-.delete-btn {
-  background: #ff4d4d;
-  color: white;
-}
-
-.edit-btn:hover {
-  background: #0056b3;
-}
-
-.delete-btn:hover {
-  background: #cc0000;
+  .edit-btn, .delete-btn {
+    width: 100%;
+    padding: 8px;
+  }
 }
 
 /* ========================= */
@@ -244,6 +188,18 @@
   color: #007bff;
 }
 
+/* Search Bar Responsive */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}
+
 /* ========================= */
 /* 📌 New Invoice Button      */
 /* ========================= */
@@ -279,12 +235,22 @@
 /* ========================= */
 @media (max-width: 768px) {
   .amount-status-wrapper {
-    flex-direction: column; /* Stack Amount & Status on smaller screens */
+    flex-direction: column;
     align-items: center;
     gap: 4px;
   }
 
   .amount-status-cell {
     min-width: 120px;
+  }
+
+  /* Make table scrollable */
+  .invoices-table-container {
+    overflow-x: auto;
+  }
+
+  .invoices-table {
+    width: 100%;
+    min-width: 600px;
   }
 }

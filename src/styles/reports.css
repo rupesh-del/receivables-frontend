@@ -4,13 +4,13 @@
 .reports-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full height */
+  min-height: 100vh;
   padding: 20px;
   background-color: #f8f9fa;
   text-align: center;
 }
 
-/* Ensure the content fills the screen */
+/* ✅ Ensure the content fills the screen */
 .report-content {
   flex: 1; /* Push footer down */
   padding-bottom: 60px; /* Ensure space for footer */
@@ -23,19 +23,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap; /* ✅ Allows wrapping on small screens */
   gap: 10px;
   margin-bottom: 20px;
 }
 
-/* Dropdown Styling */
+/* ✅ Dropdown Styling */
 .reports-dropdown {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  transition: border-color 0.3s ease-in-out;
 }
 
-/* Generate Report Button */
+/* ✅ Dropdown Focus Effect */
+.reports-dropdown:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+}
+
+/* ✅ Generate Report Button */
 .generate-btn {
   background: #007bff;
   color: white;
@@ -49,13 +58,21 @@
 
 .generate-btn:hover {
   background: #0056b3;
+  transform: scale(1.05);
 }
 
 /* ========================= */
 /* 📌 Report Table Styling */
 /* ========================= */
+.reports-table-container {
+  width: 100%;
+  overflow-x: auto; /* ✅ Enables scrolling for small screens */
+}
+
+/* ✅ Table Layout */
 .reports-table {
   width: 80%;
+  min-width: 600px; /* ✅ Prevents table squeezing */
   margin: 20px auto;
   border-collapse: collapse;
   background: white;
@@ -64,6 +81,7 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ✅ Table Header & Cell Styling */
 .reports-table th,
 .reports-table td {
   padding: 12px;
@@ -71,13 +89,21 @@
   text-align: left;
 }
 
+/* ✅ Table Header */
 .reports-table th {
   background-color: #f4f4f4;
   font-weight: bold;
   text-transform: uppercase;
 }
 
-/* No Data Available Styling */
+/* ✅ Table Footer */
+.reports-table tfoot td {
+  font-weight: bold;
+  background-color: #f8f9fa;
+  text-align: right;
+}
+
+/* ✅ No Data Available Styling */
 .no-data-text {
   text-align: center;
   font-size: 16px;
@@ -86,7 +112,7 @@
   padding: 20px;
 }
 
-/* Loading Text */
+/* ✅ Loading Text */
 .loading-text {
   text-align: center;
   font-size: 16px;
@@ -101,16 +127,17 @@
 .export-buttons {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap; /* ✅ Ensures buttons wrap properly on small screens */
   gap: 15px;
   margin-top: 20px;
 }
 
-/* Export CSV Button */
+/* ✅ Export CSV Button */
 .export-csv {
-  background: #007bff;
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 18px;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
@@ -118,15 +145,16 @@
 }
 
 .export-csv:hover {
-  background: #0056b3;
+  background: linear-gradient(135deg, #0056b3, #003d80);
+  transform: scale(1.05);
 }
 
-/* Export PDF Button */
+/* ✅ Export PDF Button */
 .export-pdf {
-  background: #28a745;
+  background: linear-gradient(135deg, #28a745, #218838);
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 18px;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
@@ -134,7 +162,8 @@
 }
 
 .export-pdf:hover {
-  background: #1e7e34;
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: scale(1.05);
 }
 
 /* ========================= */
@@ -149,14 +178,47 @@
   bottom: 0;
   width: 100%;
 }
-.reports-table tfoot td {
-  font-weight: bold;
-  background-color: #f8f9fa;
-  text-align: right;
+
+/* ✅ Ensures footer is visible on small screens */
+@media (max-width: 768px) {
+  .report-footer {
+    position: relative;
+    margin-top: 20px;
+  }
 }
 
-.reports-table td, .reports-table th {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
+/* ✅ Responsive Table Fix */
+@media (max-width: 1024px) {
+  .reports-table {
+    width: 100%;
+    min-width: unset; /* ✅ Allows better auto-resizing */
+  }
+
+  .reports-table th,
+  .reports-table td {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* ✅ Mobile Optimizations */
+@media (max-width: 600px) {
+  .report-controls {
+    flex-direction: column;
+  }
+
+  .reports-dropdown {
+    width: 100%;
+  }
+
+  .export-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .export-csv,
+  .export-pdf {
+    width: 100%;
+    text-align: center;
+  }
 }

@@ -14,6 +14,15 @@
   overflow-x: hidden;
 }
 
+/* ✅ Responsive Fix for Mobile */
+@media (max-width: 1024px) {
+  .page-container {
+    width: 100%;
+    margin-left: 0;
+    padding: 60px 20px;
+  }
+}
+
 /* ========================= */
 /* 📌 Content Wrapper (Grey Background) */
 /* ========================= */
@@ -25,10 +34,9 @@
   justify-content: center;
   width: 100%;
   max-width: 1500px;
-  margin: 0 auto;  /* Centers the grey background */
+  margin: 0 auto;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
 }
-
 
 /* ========================= */
 /* 📌 Content Box (White Box) */
@@ -38,10 +46,18 @@
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
-  width: 100%;  /* Fully expanded to utilize space */
+  width: 100%;
   max-width: 1400px;
-  overflow-x: auto;
-  margin: 0 auto;  /* Centers the white box */
+  overflow-x: auto; /* ✅ Enables scrolling on smaller screens */
+  margin: 0 auto;
+}
+
+/* ✅ Mobile Fix: Make Content Box More Flexible */
+@media (max-width: 1024px) {
+  .content-box {
+    width: 95%;
+    padding: 20px;
+  }
 }
 
 /* ========================= */
@@ -51,17 +67,18 @@
   background: #007bff;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 14px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
   display: block;
-  margin-left: auto;  /* Aligns the button to the right */
+  margin-left: auto; /* ✅ Aligns the button to the right */
 }
 
+/* ✅ Hover & Focus Effects */
 .new-payment-btn:hover {
   background: #0056b3;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
@@ -69,17 +86,19 @@
 
 .new-payment-btn:focus {
   outline: none;
-  box-shadow: 0 0 5px #007bff;
+  box-shadow: 0 0 8px #007bff;
 }
-
-
 
 /* ========================= */
 /* 📌 Payments Table Styling */
 /* ========================= */
+.payments-table-container {
+  width: 100%;
+  overflow-x: auto; /* ✅ Enables scrolling on small screens */
+}
 
 .payments-table {
-  width: 100%;  /* Utilizes full width of the content box */
+  width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
   background: white;
@@ -88,7 +107,7 @@
   table-layout: auto;
 }
 
-
+/* ✅ Table Header Styling */
 .payments-table th {
   background-color: #f4f4f4;
   font-weight: bold;
@@ -98,6 +117,7 @@
   white-space: nowrap;
 }
 
+/* ✅ Table Cell Styling */
 .payments-table td {
   padding: 14px;
   border-bottom: 1px solid #ddd;
@@ -106,9 +126,18 @@
   white-space: nowrap;
 }
 
-/* Hover Effect for Clickable Rows */
+/* ✅ Hover Effect for Clickable Rows */
 .payments-table tbody tr:hover {
   background-color: #e2e6ea;
+}
+
+/* ✅ Mobile Fix: Adjust Font Size & Padding */
+@media (max-width: 1024px) {
+  .payments-table th,
+  .payments-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
 }
 
 /* ========================= */
@@ -126,6 +155,7 @@
   font-size: 14px;
 }
 
+/* ✅ Payment Details Text Formatting */
 .payment-details p {
   margin: 5px 0;
   line-height: 1.4;
@@ -137,23 +167,19 @@
 }
 
 /* ========================= */
-/* 📌 Responsive Fixes       */
+/* 📌 Mobile Optimizations   */
 /* ========================= */
-@media (max-width: 1024px) {
-  .page-container {
+@media (max-width: 768px) {
+  .new-payment-btn {
     width: 100%;
-    margin-left: 0;
-    padding: 60px 20px;
+    text-align: center;
   }
 
-  .content-box {
-    width: 95%;
-    padding: 20px;
+  .payments-table-container {
+    overflow-x: auto;
   }
 
-  .payments-table th,
-  .payments-table td {
-    font-size: 13px;
-    padding: 10px;
+  .payments-table {
+    min-width: 600px; /* ✅ Prevents table from being squeezed */
   }
 }
