@@ -1,0 +1,159 @@
+/* ========================= */
+/* 📌 Payments Page Styling  */
+/* ========================= */
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  width: calc(100% - 240px);
+  margin-left: 240px;
+  padding: 80px 20px;
+  background-color: #f8f9fa;
+  overflow-x: hidden;
+}
+
+/* ========================= */
+/* 📌 Content Wrapper (Grey Background) */
+/* ========================= */
+.content-wrapper {
+  background: #e0e0e0;
+  padding: 40px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;  /* Centers the grey background */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ========================= */
+/* 📌 Content Box (White Box) */
+/* ========================= */
+.content-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  width: 100%;  /* Fully expanded to utilize space */
+  max-width: 1400px;
+  overflow-x: auto;
+  margin: 0 auto;  /* Centers the white box */
+}
+
+/* ========================= */
+/* 📌 New Payment Button     */
+/* ========================= */
+.new-payment-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto;  /* Aligns the button to the right */
+}
+
+.new-payment-btn:hover {
+  background: #0056b3;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.new-payment-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px #007bff;
+}
+
+
+
+/* ========================= */
+/* 📌 Payments Table Styling */
+/* ========================= */
+
+.payments-table {
+  width: 100%;  /* Utilizes full width of the content box */
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: auto;
+}
+
+
+.payments-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.payments-table td {
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hover Effect for Clickable Rows */
+.payments-table tbody tr:hover {
+  background-color: #e2e6ea;
+}
+
+/* ========================= */
+/* 📌 Expandable Row Styling */
+/* ========================= */
+.payment-details-row {
+  background-color: #f9f9f9;
+}
+
+.payment-details {
+  padding: 10px;
+  background: #f4f4f4;
+  border-radius: 5px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+}
+
+.payment-details p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.expanded-row {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+/* ========================= */
+/* 📌 Responsive Fixes       */
+/* ========================= */
+@media (max-width: 1024px) {
+  .page-container {
+    width: 100%;
+    margin-left: 0;
+    padding: 60px 20px;
+  }
+
+  .content-box {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .payments-table th,
+  .payments-table td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}

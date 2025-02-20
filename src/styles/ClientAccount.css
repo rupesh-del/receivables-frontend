@@ -1,0 +1,74 @@
+/* Page Layout */
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 100px);
+    width: calc(100% - 240px);
+    margin-left: 240px;
+    padding-top: 80px;
+    text-align: center;
+    background-color: #f8f9fa;
+  }
+  
+  /* Content Wrapper - Grey Background */
+  .content-wrapper {
+    background: #e0e0e0;
+    padding: 40px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Content Box */
+  .content-box {
+    background: #ffffff;
+    padding: 30px 50px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  /* Tables */
+  .client-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .client-table th, .client-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .client-table th {
+    background: #2c3e50;
+    color: white;
+  }
+  
+  /* Total Outstanding */
+  .total-outstanding {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #d9534f;
+  }
+  
+  /* Back Button */
+  .back-btn {
+    background: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  .back-btn:hover {
+    background: #1a252f;
+  }
+  

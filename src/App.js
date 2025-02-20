@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+import Home from "./home";
+import Clients from "./clients";
+import Invoices from "./invoices";
+import Payments from "./payments";
+import Reports from "./reports";
+import Settings from "./setting";
+import ClientAccount from "./ClientAccount";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          {/* ✅ No need to pass clients as props */}
+          <Route path="clients" element={<Clients />} />
+          <Route path="invoices" element={<Invoices />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
+          {/* ✅ Clients will be fetched directly inside ClientAccount.js */}
+          <Route path="clients/:clientId" element={<ClientAccount />} />
+        </Route>
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

@@ -1,0 +1,207 @@
+/* ========================= */
+/* 📌 Global Layout Styles */
+/* ========================= */
+body, html {
+  font-family: "Poppins", sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================= */
+/* 📌 Wrapper to Ensure Proper Layout */
+/* ========================= */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ========================= */
+/* 📌 Header Styling */
+/* ========================= */
+.header {
+  background-color: #1f3a52;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  border-bottom: 5px solid #0d2538;
+}
+
+/* ========================= */
+/* 📌 Sidebar Styling */
+/* ========================= */
+.sidebar {
+  background-color: #1f3a52;
+  width: 250px;
+  height: 100vh;
+  padding-top: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 3px 0px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  font-size: 16px;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar ul li:hover {
+  background-color: #0d2538;
+  transition: 0.3s ease-in-out;
+}
+
+/* ========================= */
+/* 📌 Content Area */
+/* ========================= */
+.content {
+  margin-left: 260px;
+  padding: 30px;
+  flex: 1; /* This ensures content takes full height */
+}
+
+/* ========================= */
+/* 📌 Welcome Section */
+/* ========================= */
+.welcome-banner {
+  background-color: #1f3a52;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ========================= */
+/* 📌 New Button */
+/* ========================= */
+.new-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  transition: 0.3s;
+}
+
+.new-button:hover {
+  background-color: #218838;
+}
+
+/* ========================= */
+/* 📌 Summary Cards */
+/* ========================= */
+.summary-cards {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.summary-card p {
+  font-size: 24px;
+  margin: 10px 0 0;
+  font-weight: bold;
+}
+
+/* Card Colors */
+.overdue {
+  background-color: #dc3545;
+}
+
+.outstanding {
+  background-color: #f39c12;
+}
+
+.payments {
+  background-color: #28a745;
+}
+
+/* ========================= */
+/* 📌 Recent Clients Section */
+/* ========================= */
+.recent-clients {
+  margin-top: 30px;
+}
+
+.recent-clients h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.recent-clients ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recent-clients li {
+  background: white;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.recent-clients li:hover {
+  background: #e9ecef;
+}
+
+/* ========================= */
+/* 📌 Footer Styling (Now Fixed) */
+/* ========================= */
+.footer {
+  background-color: #1f3a52;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  border-top: 5px solid #0d2538;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  flex-shrink: 0;
+}

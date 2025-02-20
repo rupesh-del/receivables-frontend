@@ -1,0 +1,145 @@
+/* Page Container */
+.page-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: calc(100vh - 100px); /* Adjust height to prevent overlap */
+  width: calc(100% - 240px); /* Avoids sidebar overlap */
+  margin-left: 240px; /* Pushes content away from sidebar */
+  padding-top: 80px; /* Moves content below the header */
+  text-align: center;
+  background-color: #f8f9fa; /* Light background */
+}
+
+/* Content Wrapper - Grey Background */
+.content-wrapper {
+  background: #e0e0e0; /* 🔥 Light grey background */
+  padding: 50px; /* Increased padding for better spacing */
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column; /* Ensures proper stacking */
+  justify-content: center;
+  align-items: center;
+  width: 80%; /* Ensures the content area is centered properly */
+  max-width: 900px;
+}
+
+/* Content Box */
+.content-box {
+  background: #ffffff;
+  padding: 30px 50px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  width: 100%; /* Ensures it fills the container */
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Clients Container */
+.clients-container {
+  padding: 20px;
+  margin-left: 240px;
+  padding-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers content */
+}
+
+/* Header */
+.clients-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px; /* Adjusted for better spacing */
+  margin-bottom: 20px;
+}
+
+/* New Client Button */
+.new-client-btn {
+  background: #2c3e50;
+  color: white;
+  padding: 10px 15px; /* Slightly increased padding for better button look */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease-in-out;
+}
+
+.new-client-btn:hover {
+  background: #1a252f;
+}
+
+/* Clients Table */
+.clients-table {
+  width: 100%;
+  max-width: 800px; /* Keeps the table within a readable width */
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.clients-table th,
+.clients-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.clients-table th {
+  background: #2c3e50;
+  color: white;
+}
+
+/* Clickable Rows */
+.clients-table tr:hover {
+  background: #f0f0f0;
+  cursor: pointer;
+}
+
+/* Popup Form */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup Content */
+.popup-content {
+  background: white;
+  padding: 25px; /* Adjusted padding for better spacing */
+  border-radius: 10px;
+  width: 320px;
+  text-align: center;
+}
+
+/* Input Fields */
+.popup-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Popup Buttons */
+.popup-content button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Close Button */
+.close-btn {
+  background: red;
+  color: white;
+  margin-top: 5px;
+  border-radius: 5px;
+}
