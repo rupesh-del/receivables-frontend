@@ -155,92 +155,85 @@ const NewPaymentModal = ({ isOpen, onClose, selectedInvoices = [] }) => {
     <div className="popup">
       <div className="popup-content">
         <h3>New Payment</h3>
-
-        {/* ✅ Client Selection (Now Editable) */}
-        <label>Client:</label>
-        <select
-          value={selectedClient}
-          onChange={(e) => setSelectedClient(e.target.value)}
-        >
-          <option value="">Select Client</option>
-          {clients.map(({ id, full_name }) => (
-            <option key={id} value={id}>
-              {full_name}
-            </option>
-          ))}
-        </select>
-
-        {/* ✅ Auto-Filled Invoices */}
-        {payments.length > 0 && (
-          <div className="payment-list">
-            <h4>Pending Payments:</h4>
-            <ul>
-              {payments.map(({ invoice_id, mode, amount }, index) => (
-                <li key={index}>
-                  Invoice: {invoice_id} | Mode: {mode} | Amount: 
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => updatePaymentAmount(index, e.target.value)}
-                    className="amount-input"
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* ✅ Invoice Selection (Filtered by Client) */}
-        <label>Invoice:</label>
-        <select
-          value={selectedInvoice}
-          onChange={(e) => setSelectedInvoice(e.target.value)}
-          disabled={!selectedClient || filteredInvoices.length === 0}
-        >
-          <option value="">Select Invoice</option>
-          {filteredInvoices.map(({ id, invoice_number, amount, total_paid }) => {
-            const balanceOutstanding = amount - (total_paid || 0);
-            return (
+  
+        {/* ✅ Scrollable Content Wrapper */}
+        <div className="popup-body">
+          {/* ✅ Client Selection (Now Editable) */}
+          <label>Client:</label>
+          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
+            <option value="">Select Client</option>
+            {clients.map(({ id, full_name }) => (
               <option key={id} value={id}>
-                {invoice_number} (Remaining: ${balanceOutstanding.toFixed(2)})
+                {full_name}
               </option>
-            );
-          })}
-        </select>
-
-        {/* ✅ Payment Mode Selection */}
-        <label>Mode of Payment:</label>
-        <select value={mode} onChange={(e) => setMode(e.target.value)}>
-          <option value="Cash">Cash</option>
-          <option value="MMG">MMG</option>
-          <option value="Bank">Bank</option>
-          <option value="Other">Other</option>
-        </select>
-
-        {/* ✅ Payment Amount (Auto-filled & Editable) */}
-        <label>Amount:</label>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Enter amount"
-        />
-
-        {/* ✅ Add Payment Button */}
-        <button className="add-more-btn" onClick={addPayment}>
-          Add Payment
-        </button>
-
-        {/* ✅ Submit & Close Buttons */}
-        <button className="submit-btn" onClick={submitPayments}>
-          Submit Payments
-        </button>
-        <button className="close-btn" onClick={handleClose}>
-          Cancel
-        </button>
+            ))}
+          </select>
+  
+          {/* ✅ Auto-Filled Invoices */}
+          {payments.length > 0 && (
+            <div className="payment-list">
+              <h4>Pending Payments:</h4>
+              <ul>
+                {payments.map(({ invoice_id, mode, amount }, index) => (
+                  <li key={index}>
+                    Invoice: {invoice_id} | Mode: {mode} | Amount: 
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => updatePaymentAmount(index, e.target.value)}
+                      className="amount-input"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+  
+          {/* ✅ Invoice Selection (Filtered by Client) */}
+          <label>Invoice:</label>
+          <select value={selectedInvoice} onChange={(e) => setSelectedInvoice(e.target.value)} disabled={!selectedClient || filteredInvoices.length === 0}>
+            <option value="">Select Invoice</option>
+            {filteredInvoices.map(({ id, invoice_number, amount, total_paid }) => {
+              const balanceOutstanding = amount - (total_paid || 0);
+              return (
+                <option key={id} value={id}>
+                  {invoice_number} (Remaining: ${balanceOutstanding.toFixed(2)})
+                </option>
+              );
+            })}
+          </select>
+  
+          {/* ✅ Payment Mode Selection */}
+          <label>Mode of Payment:</label>
+          <select value={mode} onChange={(e) => setMode(e.target.value)}>
+            <option value="Cash">Cash</option>
+            <option value="MMG">MMG</option>
+            <option value="Bank">Bank</option>
+            <option value="Other">Other</option>
+          </select>
+  
+          {/* ✅ Payment Amount (Auto-filled & Editable) */}
+          <label>Amount:</label>
+          <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Enter amount" />
+  
+          <button className="add-more-btn" onClick={addPayment}>
+            Add Payment
+          </button>
+        </div> 
+        {/* 🔥 END of Scrollable Content Wrapper */}
+  
+        {/* ✅ Footer for buttons */}
+        <div className="popup-footer">
+          <button className="submit-btn" onClick={submitPayments}>
+            Submit Payments
+          </button>
+          <button className="close-btn" onClick={handleClose}>
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-  ) : null;
+  ) : null;  
 };
 
 export default NewPaymentModal;

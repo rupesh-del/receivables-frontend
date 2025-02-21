@@ -65,30 +65,44 @@ const Invoices = () => {
     );
   };
 
-  // ✅ Add Multiple Invoices
   const addInvoice = async (invoiceList) => {
-    if (invoiceList.length < 1 || invoiceList.length > 5) {
+    if (!Array.isArray(invoiceList) || invoiceList.length < 1 || invoiceList.length > 5) {
       alert("You can add between 1 to 5 invoices at a time.");
       return;
     }
-
+  
+    // ✅ Ensure each invoice has a valid client_id
+    for (let invoice of invoiceList) {
+      if (!invoice.client_id) {
+        alert("❌ Each invoice must have a valid client selected.");
+        return;
+      }
+    }
+  
     try {
+      console.log("📤 Sending Invoices to API:", JSON.stringify(invoiceList, null, 2)); // ✅ Debugging log
+  
       const response = await fetch("https://receivables-api.onrender.com/invoices", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(invoiceList),
       });
-
-      if (!response.ok) throw new Error("Failed to add invoices.");
-
+  
+      if (!response.ok) {
+        const errorData = await response.json(); // ✅ Get detailed API error message
+        throw new Error(errorData.error || "Failed to add invoices.");
+      }
+  
       const newInvoices = await response.json();
+      console.log("✅ Invoices Added Successfully:", newInvoices);
+  
       setInvoices((prevInvoices) => [...prevInvoices, ...newInvoices]);
       setShowPopup(false);
     } catch (error) {
       console.error("❌ Error adding invoices:", error);
       alert(`Error: ${error.message}`);
     }
-  };
+  };  
 
   // ✅ Edit Invoice
   const updateInvoice = async (updatedInvoice) => {  // ✅ Accept updated invoice from modal
@@ -273,8 +287,6 @@ const Invoices = () => {
     onSubmit={updateInvoice}
   />
 )}
-
-
 
 {/* ✅ Delete Confirmation Modal */}
 <DeleteConfirmationModal

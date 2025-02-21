@@ -168,6 +168,57 @@
   background-color: #e9ecef;
   font-weight: bold;
 }
+/* ========================= */
+/* 📌 Modal Styling (Scrollable) */
+/* ========================= */
+
+.popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow-y: auto; /* ✅ Ensures modal itself can scroll */
+  padding: 20px;
+}
+
+/* ✅ Main Modal Content */
+.popup-content {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh; /* ✅ Ensures modal does not exceed screen */
+  overflow: hidden; /* ✅ Prevents modal itself from scrolling */
+}
+
+/* ✅ Scrollable Content */
+.popup-body {
+  flex-grow: 1; /* ✅ Expands to available space */
+  overflow-y: auto; /* ✅ Enables scrolling */
+  padding: 10px 15px;
+  max-height: 60vh; /* ✅ Ensures content does not overflow */
+}
+
+/* ✅ Fixed Footer */
+.popup-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border-top: 1px solid #ddd;
+  background: white;
+  position: sticky;
+  bottom: 0;
+}
+
+
 
 /* ========================= */
 /* 📌 Mobile Optimizations   */
