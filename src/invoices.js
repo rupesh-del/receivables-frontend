@@ -67,12 +67,12 @@ const Invoices = () => {
 
 // ✅ Add Multiple Invoices (Frontend)
 const addInvoice = async (invoiceList) => {
+  console.log("📤 Sending to API:", JSON.stringify(invoiceList, null, 2)); // ✅ LOG THIS
+
   if (invoiceList.length < 1 || invoiceList.length > 5) {
     alert("You can add between 1 to 5 invoices at a time.");
     return;
   }
-
-  console.log("📤 Sending Invoices to API:", JSON.stringify(invoiceList, null, 2)); // ✅ Debugging log
 
   try {
     const response = await fetch("https://receivables-api.onrender.com/invoices", {
@@ -96,6 +96,7 @@ const addInvoice = async (invoiceList) => {
     alert(`Error: ${error.message}`);
   }
 };
+
 
 
   // ✅ Edit Invoice

@@ -68,33 +68,45 @@ const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients }) => {
     console.log("❌ Removed Invoice at index:", index);
   };
 
-  // ✅ Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+// ✅ Handle form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log("🚀 Submitting Invoices:", invoices);
+  console.log("🚀 Submitting Invoices:", invoices);
 
-    // Validate input fields
-    if (invoices.some(inv => !inv.client_id || !inv.item || !inv.amount || !inv.due_date)) {
-      setError("⚠️ All fields are required for each invoice.");
-      console.log("❌ Validation Failed: Missing Fields");
-      return;
-    }
+  // Validate input fields
+  if (invoices.some(inv => !inv.client_id || !inv.item || !inv.amount || !inv.due_date)) {
+    setError("⚠️ All fields are required for each invoice.");
+    console.log("❌ Validation Failed: Missing Fields");
+    return;
+  }
 
-    try {
-      console.log("📤 Sending Invoices to API...");
-      await onSubmit(invoices);
-      console.log("✅ Submission Successful! Closing Modal...");
-      setError("");
+  // ✅ REMOVE `invoice_number` BEFORE SENDING
+  const cleanedInvoices = invoices.map(({ client_id, item, amount, due_date, status }) => ({
+    client_id,
+    item,
+    amount: Number(amount),  // ✅ Ensure `amount` is a number
+    due_date,
+    status: status || "Pending" // ✅ Default status if not provided
+  }));
 
-      // ✅ Reset State After Submission
-      setInvoices([initialInvoice]);  
-      onClose();
-    } catch (error) {
-      console.error("❌ Submission Failed:", error);
-      setError("⚠️ Error submitting invoices. Please try again.");
-    }
-  };
+  console.log("📤 FINAL CLEANED DATA TO API:", JSON.stringify(cleanedInvoices, null, 2)); // ✅ Debugging
+
+  try {
+    console.log("📤 Sending Invoices to API...");
+    await onSubmit(cleanedInvoices);
+    console.log("✅ Submission Successful! Closing Modal...");
+    setError("");
+
+    // ✅ Reset State After Submission
+    setInvoices([initialInvoice]);  
+    onClose();
+  } catch (error) {
+    console.error("❌ Submission Failed:", error);
+    setError("⚠️ Error submitting invoices. Please try again.");
+  }
+};
+
 
   return (
     <div className="modal-overlay">
