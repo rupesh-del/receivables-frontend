@@ -2,7 +2,7 @@
 /* 📌 Modal Overlay (Backdrop) */
 /* ========================= */
 .overlay {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
   position: fixed;
   top: 0;
   left: 0;
@@ -11,16 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* ✅ Show Modal with Smooth Animation */
-.overlay.active {
-  opacity: 1;
-  visibility: visible;
+  z-index: 1000; /* Ensure it appears above all content */
+  transition: opacity 0.3s ease;
 }
 
 /* ========================= */
@@ -32,19 +24,15 @@
   padding: 20px;
   max-width: 500px;
   width: 90%;
-  max-height: 80vh; /* Prevents content overflow */
+  max-height: 80vh; /* Prevents overflow */
   overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transform: translateY(-30px);
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* ✅ Modal Animation - Fade In */
-.overlay.active .modal {
+  
+  /* ✅ Ensure modal is fully visible */
   transform: translateY(0);
   opacity: 1;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* ========================= */
@@ -54,6 +42,7 @@ h2 {
   margin-bottom: 20px;
   font-size: 24px;
   text-align: center;
+  color: #333;
 }
 
 /* ========================= */
@@ -64,6 +53,7 @@ form {
   flex-direction: column;
 }
 
+/* Labels */
 label {
   margin-bottom: 5px;
   font-weight: bold;
@@ -97,7 +87,7 @@ button {
   width: 100%;
 }
 
-/* ✅ Primary Button */
+/* ✅ Primary Button (Save) */
 button[type="submit"] {
   background-color: #007bff;
   color: white;

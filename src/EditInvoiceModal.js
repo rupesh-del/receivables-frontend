@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal"; // Make sure to install react-modal
 import "./styles/modal.css"; // Add your styles for the modal
 
+Modal.setAppElement("#root"); // ✅ Fixes the warning
+
 const EditInvoiceModal = ({ isOpen, onClose, invoice, onSubmit }) => {
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
@@ -15,11 +17,18 @@ const EditInvoiceModal = ({ isOpen, onClose, invoice, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...invoice, item, amount });
+    onSubmit({ ...invoice, item, amount }); // ✅ Pass updated data
+    onClose(); // ✅ Close modal after submitting
   };
+  
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onClose} className="modal" overlayClassName="overlay">
+    <Modal
+  isOpen={isOpen} // ✅ Ensure this is properly controlled
+  onRequestClose={onClose}
+  className="modal"
+  overlayClassName="overlay"
+>
       <h2>Edit Invoice</h2>
       <form onSubmit={handleSubmit}>
         <div>

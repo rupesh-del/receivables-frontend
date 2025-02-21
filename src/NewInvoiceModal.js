@@ -1,23 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/NewInvoiceModal.css";
 
 const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients }) => {
-  const [invoices, setInvoices] = useState([
-    {
-      client_id: "",
-      invoice_number: generateInvoiceNumber(),
-      item: "",
-      amount: "",
-      due_date: "",
-    },
-  ]);
+  console.log("🟢 NewInvoiceModal Rendered | isOpen:", isOpen);
 
-  // Function to generate a unique invoice number
+  // ✅ Initial State
+  const initialInvoice = {
+    client_id: "",
+    invoice_number: generateInvoiceNumber(),
+    item: "",
+    amount: "",
+    due_date: "",
+  };
+
+  const [invoices, setInvoices] = useState([initialInvoice]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log("📢 Modal Visibility Changed | isOpen:", isOpen);
+    if (!isOpen) {
+      console.log("🔄 Resetting Modal State...");
+      setInvoices([initialInvoice]); // ✅ Reset to initial state when closing
+      setError(""); // ✅ Clear errors
+    }
+  }, [isOpen]);
+
+  // ✅ Generate Unique Invoice Number
   function generateInvoiceNumber() {
     return `INV-${Math.floor(Math.random() * 90000) + 10000}`;
   }
 
-  // Handle input changes for each invoice
+  // ✅ Prevent rendering when modal is closed
+  if (!isOpen) {
+    console.log("❌ Modal is closed, returning null...");
+    return null;
+  }
+
+  console.log("✅ Modal is Open! Rendering Invoice Form...");
+
+  // ✅ Handle input changes for each invoice
   const handleChange = (index, e) => {
     const { name, value } = e.target;
     const updatedInvoices = [...invoices];
@@ -25,42 +46,61 @@ const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients }) => {
     setInvoices(updatedInvoices);
   };
 
-  // Add a new invoice entry (Limit to 5)
+  // ✅ Add a new invoice entry (Limit to 5)
   const addMoreInvoices = () => {
     if (invoices.length < 5) {
-      setInvoices([
-        ...invoices,
-        {
-          client_id: "",
-          invoice_number: generateInvoiceNumber(),
-          item: "",
-          amount: "",
-          due_date: "",
-        },
-      ]);
+      const newInvoice = {
+        client_id: "",
+        invoice_number: generateInvoiceNumber(),
+        item: "",
+        amount: "",
+        due_date: "",
+      };
+      setInvoices([...invoices, newInvoice]);
+      console.log("➕ Added new invoice:", newInvoice);
     }
   };
 
-  // Remove an invoice entry
+  // ✅ Remove an invoice entry
   const removeInvoice = (index) => {
     const updatedInvoices = invoices.filter((_, i) => i !== index);
     setInvoices(updatedInvoices);
+    console.log("❌ Removed Invoice at index:", index);
   };
 
-  // Handle form submission
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await onSubmit(invoices);
-    onClose(); // ✅ Close modal after submission
-  };
 
-  // Prevent rendering when modal is not active
-  if (!isOpen) return null;
+    console.log("🚀 Submitting Invoices:", invoices);
+
+    // Validate input fields
+    if (invoices.some(inv => !inv.client_id || !inv.item || !inv.amount || !inv.due_date)) {
+      setError("⚠️ All fields are required for each invoice.");
+      console.log("❌ Validation Failed: Missing Fields");
+      return;
+    }
+
+    try {
+      console.log("📤 Sending Invoices to API...");
+      await onSubmit(invoices);
+      console.log("✅ Submission Successful! Closing Modal...");
+      setError("");
+
+      // ✅ Reset State After Submission
+      setInvoices([initialInvoice]);  
+      onClose();
+    } catch (error) {
+      console.error("❌ Submission Failed:", error);
+      setError("⚠️ Error submitting invoices. Please try again.");
+    }
+  };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <h3>New Invoice</h3>
+        {error && <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>}
 
         <form onSubmit={handleSubmit}>
           {invoices.map((invoice, index) => (

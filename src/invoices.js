@@ -91,48 +91,63 @@ const Invoices = () => {
   };
 
   // ✅ Edit Invoice
-  const updateInvoice = async () => {
-    if (!editInvoice) return;
-
+  const updateInvoice = async (updatedInvoice) => {  // ✅ Accept updated invoice from modal
+    if (!updatedInvoice) return;
+  
     try {
-      const response = await fetch(`https://receivables-api.onrender.com/invoices/${editInvoice.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item: editInvoice.item, amount: editInvoice.amount }),
-      });
-
+      console.log("📤 Sending Update Request for Invoice:", updatedInvoice);
+  
+      const response = await fetch(
+        `https://receivables-api.onrender.com/invoices/${updatedInvoice.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ item: updatedInvoice.item, amount: updatedInvoice.amount }),
+        }
+      );
+  
       if (!response.ok) throw new Error("Failed to update invoice.");
-
+  
       setInvoices((prevInvoices) =>
         prevInvoices.map((inv) =>
-          inv.id === editInvoice.id ? { ...inv, item: editInvoice.item, amount: editInvoice.amount } : inv
+          inv.id === updatedInvoice.id
+            ? { ...inv, item: updatedInvoice.item, amount: updatedInvoice.amount }
+            : inv
         )
       );
       setShowEditPopup(false);
+      console.log("✅ Invoice Updated Successfully!");
     } catch (error) {
       console.error("❌ Error updating invoice:", error);
       alert(`Error: ${error.message}`);
     }
   };
+  
+  
 
   // ✅ Delete Invoice
   const deleteInvoice = async () => {
     if (!deleteId) return;
-
+  
     try {
-      const response = await fetch(`https://receivables-api.onrender.com/invoices/${deleteId}`, {
-        method: "DELETE",
-      });
-
+      console.log("🗑️ Sending Delete Request for Invoice ID:", deleteId);
+  
+      const response = await fetch(
+        `https://receivables-api.onrender.com/invoices/${deleteId}`,
+        { method: "DELETE" }
+      );
+  
       if (!response.ok) throw new Error("Failed to delete invoice.");
-
+  
       setInvoices((prevInvoices) => prevInvoices.filter((inv) => inv.id !== deleteId));
       setShowDeleteConfirm(false);
+      console.log("✅ Invoice Deleted Successfully!");
     } catch (error) {
       console.error("❌ Error deleting invoice:", error);
       alert(`Error: ${error.message}`);
     }
   };
+  
 
   return (
     <div className="page-container">
@@ -150,9 +165,13 @@ const Invoices = () => {
                 className="search-input"
               />
             </div>
-            <button className="new-invoice-btn" onClick={() => setShowPopup(true)}>
-              <FaPlus /> New Invoice
-            </button>
+            <button className="new-invoice-btn" onClick={() => {
+    console.log("🟢 Open Invoice Modal Clicked"); 
+    setShowPopup(true);
+}}>
+  <FaPlus /> New Invoice
+</button>
+
             {selectedInvoices.length > 0 && (
               <button className="add-payment-btn" onClick={() => setShowPaymentPopup(true)}>
                 <FaMoneyBill /> Add Payment
@@ -211,21 +230,29 @@ const Invoices = () => {
                     <button
   className="edit-btn"
   onClick={() => {
-    setEditInvoice(invoice);  // ✅ Set the invoice to be edited
-    setShowEditPopup(true);   // ✅ Open the modal
+    console.log("✏️ Edit button clicked for Invoice:", invoice);
+    setEditInvoice(invoice);
+    setShowEditPopup(true);
+    setTimeout(() => {
+      console.log("🔵 showEditPopup:", showEditPopup); // ✅ Log updated state
+    }, 100);
   }}
 >
   <FaEdit />
 </button>
+
+
 <button
   className="delete-btn"
   onClick={() => {
+    console.log("🗑️ Delete button clicked for Invoice ID:", invoice.id);
     setDeleteId(invoice.id);   // ✅ Set the invoice to be deleted
     setShowDeleteConfirm(true); // ✅ Open the modal
   }}
 >
   <FaTrash />
 </button>
+
                     </td>
                   </tr>
                 );
@@ -235,20 +262,36 @@ const Invoices = () => {
         </div>
       </div>
 {/* ✅ Edit Invoice Modal */}
-<EditInvoiceModal
-  isOpen={showEditPopup}
-  onClose={() => setShowEditPopup(false)}
-  invoice={editInvoice}
-  onSubmit={updateInvoice} // Ensure this function exists
-/>
+{showEditPopup && (
+  <EditInvoiceModal
+    isOpen={showEditPopup}
+    onClose={() => {
+      console.log("❌ Closing Edit Modal");
+      setShowEditPopup(false);
+    }}
+    invoice={editInvoice}
+    onSubmit={updateInvoice}
+  />
+)}
+
+
 
 {/* ✅ Delete Confirmation Modal */}
 <DeleteConfirmationModal
   isOpen={showDeleteConfirm}
   onClose={() => setShowDeleteConfirm(false)}
-  onConfirm={deleteInvoice} // Ensure this function exists
+  onConfirm={deleteInvoice} // ✅ Ensure this function exists
 />
-      <NewInvoiceModal isOpen={showPopup} onClose={() => setShowPopup(false)} clients={clients} onSubmit={addInvoice} />
+
+<NewInvoiceModal 
+  isOpen={showPopup} 
+  onClose={() => {
+    console.log("❌ Closing Modal"); 
+    setShowPopup(false);
+  }} 
+  clients={clients} 
+  onSubmit={addInvoice} 
+/>
       <NewPaymentModal isOpen={showPaymentPopup} onClose={() => setShowPaymentPopup(false)} selectedInvoices={selectedInvoices} />
     </div>
   );
