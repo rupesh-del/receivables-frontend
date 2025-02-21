@@ -72,7 +72,7 @@ const addInvoice = async (invoiceList) => {
     return;
   }
 
-  console.log("📤 Sending Invoices to API:", JSON.stringify(invoiceList, null, 2)); // ✅ Debug log
+  console.log("📤 Sending Invoices to API:", JSON.stringify(invoiceList, null, 2)); // ✅ Debugging log
 
   try {
     const response = await fetch("https://receivables-api.onrender.com/invoices", {
@@ -97,8 +97,6 @@ const addInvoice = async (invoiceList) => {
   }
 };
 
-
-   
 
   // ✅ Edit Invoice
   const updateInvoice = async (updatedInvoice) => {  // ✅ Accept updated invoice from modal
