@@ -54,34 +54,29 @@ const Home = () => {
   };  
 
   // ✅ Calculate Dashboard Stats
-  const totalOverdue = invoices
+// ✅ Calculate Total Overdue (Only "Overdue" invoices - Payments made)
+const totalOverdue = invoices
   .filter((invoice) => getInvoiceStatus(invoice) === "Overdue")
   .reduce((sum, invoice) => {
-    const invoicePayments = payments.filter(
-      (payment) => payment.invoice_number === invoice.invoice_number
-    );
-
+    const invoicePayments = payments.filter((payment) => payment.invoice_number === invoice.invoice_number);
     const totalPaid = invoicePayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
     const remainingBalance = Number(invoice.amount) - totalPaid;
-
     return sum + (remainingBalance > 0 ? remainingBalance : 0);
   }, 0);
 
-
-  const totalOutstanding = invoices
-  .filter((invoice) => getInvoiceStatus(invoice) === "Outstanding")
+// ✅ Calculate Total Outstanding (Overdue + Outstanding invoices - Payments made)
+const totalOutstanding = invoices
+  .filter((invoice) => getInvoiceStatus(invoice) === "Overdue" || getInvoiceStatus(invoice) === "Outstanding")
   .reduce((sum, invoice) => {
-    const invoicePayments = payments.filter(
-      (payment) => payment.invoice_number === invoice.invoice_number
-    );
-
+    const invoicePayments = payments.filter((payment) => payment.invoice_number === invoice.invoice_number);
     const totalPaid = invoicePayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
     const remainingBalance = Number(invoice.amount) - totalPaid;
-
     return sum + (remainingBalance > 0 ? remainingBalance : 0);
   }, 0);
 
-  const totalPayments = payments.reduce((sum, pay) => sum + Number(pay.amount), 0);
+// ✅ Total Payments Made
+const totalPayments = payments.reduce((sum, pay) => sum + Number(pay.amount), 0);
+
 
 
   // ✅ Get Recently Active Clients
