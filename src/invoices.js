@@ -67,18 +67,27 @@ const Invoices = () => {
 
 // ✅ Add Multiple Invoices (Frontend)
 const addInvoice = async (invoiceList) => {
-  console.log("📤 Sending to API:", JSON.stringify(invoiceList, null, 2)); // ✅ LOG THIS
+  console.log("📤 Sending to API:", JSON.stringify(invoiceList, null, 2));
 
-  if (invoiceList.length < 1 || invoiceList.length > 5) {
+  if (!Array.isArray(invoiceList) || invoiceList.length === 0 || invoiceList.length > 5) {
     alert("You can add between 1 to 5 invoices at a time.");
     return;
   }
+
+  // ✅ Ensure correct data types
+  const formattedInvoices = invoiceList.map(inv => ({
+    client_id: Number(inv.client_id),  // Ensure INTEGER
+    item: inv.item ? inv.item.toString() : "Unknown",  // Ensure STRING
+    amount: parseFloat(inv.amount),  // Convert to FLOAT
+    due_date: new Date(inv.due_date).toISOString().slice(0, 10),  // Convert to YYYY-MM-DD
+    status: inv.status || "Pending"  // Default to "Pending"
+  }));
 
   try {
     const response = await fetch("https://receivables-api.onrender.com/invoices", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(invoiceList),
+      body: JSON.stringify(formattedInvoices),  // Ensure it's always an array
     });
 
     if (!response.ok) {
@@ -97,41 +106,6 @@ const addInvoice = async (invoiceList) => {
   }
 };
 
-
-
-  // ✅ Edit Invoice
-  const updateInvoice = async (updatedInvoice) => {  // ✅ Accept updated invoice from modal
-    if (!updatedInvoice) return;
-  
-    try {
-      console.log("📤 Sending Update Request for Invoice:", updatedInvoice);
-  
-      const response = await fetch(
-        `https://receivables-api.onrender.com/invoices/${updatedInvoice.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ item: updatedInvoice.item, amount: updatedInvoice.amount }),
-        }
-      );
-  
-      if (!response.ok) throw new Error("Failed to update invoice.");
-  
-      setInvoices((prevInvoices) =>
-        prevInvoices.map((inv) =>
-          inv.id === updatedInvoice.id
-            ? { ...inv, item: updatedInvoice.item, amount: updatedInvoice.amount }
-            : inv
-        )
-      );
-      setShowEditPopup(false);
-      console.log("✅ Invoice Updated Successfully!");
-    } catch (error) {
-      console.error("❌ Error updating invoice:", error);
-      alert(`Error: ${error.message}`);
-    }
-  };
-  
   
 
   // ✅ Delete Invoice
@@ -153,6 +127,36 @@ const addInvoice = async (invoiceList) => {
       console.log("✅ Invoice Deleted Successfully!");
     } catch (error) {
       console.error("❌ Error deleting invoice:", error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+  
+  const updateInvoice = async (updatedInvoice) => {
+    try {
+      const response = await fetch(
+        `https://receivables-api.onrender.com/invoices/${updatedInvoice.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedInvoice),
+        }
+      );
+  
+      if (!response.ok) throw new Error("Failed to update invoice.");
+  
+      const newInvoiceData = await response.json();
+  
+      // ✅ Update state with the modified invoice
+      setInvoices((prevInvoices) =>
+        prevInvoices.map((invoice) =>
+          invoice.id === updatedInvoice.id ? newInvoiceData : invoice
+        )
+      );
+  
+      setShowEditPopup(false);
+      console.log("✅ Invoice Updated Successfully:", newInvoiceData);
+    } catch (error) {
+      console.error("❌ Error updating invoice:", error);
       alert(`Error: ${error.message}`);
     }
   };

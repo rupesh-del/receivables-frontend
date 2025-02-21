@@ -85,7 +85,26 @@ const Home = () => {
 
 
   // ✅ Get Recently Active Clients
-  const recentClients = clients.slice(-5).reverse(); // Last 5 clients engaged
+  const getClientLastInteraction = (clientId) => {
+    // Get the latest invoice date for this client
+    const lastInvoice = invoices
+      .filter((invoice) => invoice.client_id === clientId)
+      .reduce((latest, invoice) => (new Date(invoice.date) > new Date(latest.date) ? invoice : latest), { date: "2000-01-01" });
+  
+    // Get the latest payment date for this client
+    const lastPayment = payments
+      .filter((payment) => payment.client_id === clientId)
+      .reduce((latest, payment) => (new Date(payment.date) > new Date(latest.date) ? payment : latest), { date: "2000-01-01" });
+  
+    // Get the most recent interaction
+    return new Date(lastInvoice.date) > new Date(lastPayment.date) ? lastInvoice.date : lastPayment.date;
+  };
+  
+  // Sort clients by most recent interaction
+  const recentClients = [...clients]
+    .sort((a, b) => new Date(getClientLastInteraction(b.id)) - new Date(getClientLastInteraction(a.id)))
+    .slice(0, 5);
+  
 
   return (
     <div className="home-container">
@@ -110,15 +129,15 @@ const Home = () => {
       <div className="summary-cards">
         <div className="summary-card overdue">
           <h3>Overdue</h3>
-          <p>${totalOverdue.toFixed(2)}</p>
+          <p>${totalOverdue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className="summary-card outstanding">
           <h3>Outstanding</h3>
-          <p>${totalOutstanding.toFixed(2)}</p>
+          <p>${totalOutstanding.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className="summary-card payments">
           <h3>Payments</h3>
-          <p>${totalPayments.toFixed(2)}</p>
+          <p>${totalPayments.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
       </div>
 
