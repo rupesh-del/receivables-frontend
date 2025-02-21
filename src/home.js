@@ -34,34 +34,55 @@ const Home = () => {
       .catch((err) => console.error("❌ Error fetching payments:", err));
   }, []);
 
-  // ✅ Function to Determine Invoice Status
   const getInvoiceStatus = (invoice) => {
     const dueDate = new Date(invoice.due_date);
     const today = new Date();
+  
+    // Get all payments for this invoice
+    const invoicePayments = payments.filter(
+      (payment) => payment.invoice_number === invoice.invoice_number
+    );
+  
+    // Calculate total paid amount
+    const totalPaid = invoicePayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+  
+    const remainingBalance = Number(invoice.amount) - totalPaid;
+  
+    if (remainingBalance <= 0) return "Paid"; // Fully paid invoice
+    if (dueDate < today) return "Overdue"; // Invoice past due date with balance remaining
+    return "Outstanding"; // Future due date with balance remaining
+  };  
 
-    // Find all payments made for this invoice
+  // ✅ Calculate Dashboard Stats
+  const totalOverdue = invoices
+  .filter((invoice) => getInvoiceStatus(invoice) === "Overdue")
+  .reduce((sum, invoice) => {
     const invoicePayments = payments.filter(
       (payment) => payment.invoice_number === invoice.invoice_number
     );
 
-    // Calculate total paid amount
     const totalPaid = invoicePayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+    const remainingBalance = Number(invoice.amount) - totalPaid;
 
-    if (totalPaid >= Number(invoice.amount)) return "Paid";
-    if (dueDate < today) return "Overdue";
-    return "Outstanding";
-  };
+    return sum + (remainingBalance > 0 ? remainingBalance : 0);
+  }, 0);
 
-  // ✅ Calculate Dashboard Stats
-  const totalOverdue = invoices
-    .filter((invoice) => getInvoiceStatus(invoice) === "Overdue")
-    .reduce((sum, invoice) => sum + Number(invoice.amount), 0);
 
   const totalOutstanding = invoices
-    .filter((invoice) => getInvoiceStatus(invoice) === "Outstanding")
-    .reduce((sum, invoice) => sum + Number(invoice.amount), 0);
+  .filter((invoice) => getInvoiceStatus(invoice) === "Outstanding")
+  .reduce((sum, invoice) => {
+    const invoicePayments = payments.filter(
+      (payment) => payment.invoice_number === invoice.invoice_number
+    );
+
+    const totalPaid = invoicePayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+    const remainingBalance = Number(invoice.amount) - totalPaid;
+
+    return sum + (remainingBalance > 0 ? remainingBalance : 0);
+  }, 0);
 
   const totalPayments = payments.reduce((sum, pay) => sum + Number(pay.amount), 0);
+
 
   // ✅ Get Recently Active Clients
   const recentClients = clients.slice(-5).reverse(); // Last 5 clients engaged

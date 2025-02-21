@@ -41,6 +41,42 @@ const Clients = () => {
       });
   }, []);
 
+// ✅ Function to Re-fetch Clients
+const fetchClients = () => {
+  fetch(API_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Updated Clients:", data);
+      setClients(data);
+      setFilteredClients(data);
+    })
+    .catch((err) => console.error("Error fetching clients:", err));
+};
+const addPayment = (newPayment) => {
+  fetch("/payments", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newPayment),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      fetchClients(); // ✅ Refresh clients after adding a payment
+    })
+    .catch((err) => console.error("Error adding payment:", err));
+};
+const addInvoice = (newInvoice) => {
+  fetch("/invoices", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newInvoice),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      fetchClients(); // ✅ Refresh clients after adding an invoice
+    })
+    .catch((err) => console.error("Error adding invoice:", err));
+};
+
   // ✅ Handle input changes
   const handleChange = (e) => {
     setNewClient({ ...newClient, [e.target.name]: e.target.value });
@@ -159,9 +195,10 @@ const Clients = () => {
         <td>{client.full_name}</td>
         <td>{client.address}</td>
         <td>{client.contact}</td>
-        <td style={{ fontWeight: "bold", color: client.balance > 0 ? "red" : "green" }}>
-          ${client.balance.toFixed(2)}
-        </td> {/* ✅ Add this line to display balance */}
+        <td style={{ fontWeight: "bold", color: Number(client.balance) < 0 ? "red" : "green" }}>
+  ${!isNaN(Number(client.balance)) ? Number(client.balance).toFixed(2) : "0.00"}
+</td>
+
         <td>
           <button
             className="edit-btn"
