@@ -142,47 +142,52 @@ const Clients = () => {
             <p>Loading clients...</p>
           ) : (
             <table className="clients-table">
-              <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Address</th>
-                  <th>Contact</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredClients.length > 0 ? (
-                  filteredClients.map((client) => (
-                    <tr key={client.id} onClick={() => handleClientClick(client.id)}>
-                      <td>{client.full_name}</td>
-                      <td>{client.address}</td>
-                      <td>{client.contact}</td>
-                      <td>
-                      <button 
-  className="edit-btn" 
-  onClick={(e) => {
-    e.stopPropagation();  // Prevents row click event
-    setEditingClient(client);
-    setShowPopup(true);  // Open the edit popup
-  }}
->
-  Edit
-</button>
+<thead>
+  <tr>
+    <th>Full Name</th>
+    <th>Address</th>
+    <th>Contact</th>
+    <th>Balance</th> {/* ✅ Add this new column */}
+    <th>Actions</th>
+  </tr>
+</thead>
 
-                        <button className="delete-btn" onClick={() => handleDelete(client.id)}>
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" style={{ textAlign: "center", padding: "15px", color: "#888" }}>
-                      No clients found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+<tbody>
+  {filteredClients.length > 0 ? (
+    filteredClients.map((client) => (
+      <tr key={client.id} onClick={() => handleClientClick(client.id)}>
+        <td>{client.full_name}</td>
+        <td>{client.address}</td>
+        <td>{client.contact}</td>
+        <td style={{ fontWeight: "bold", color: client.balance > 0 ? "red" : "green" }}>
+          ${client.balance.toFixed(2)}
+        </td> {/* ✅ Add this line to display balance */}
+        <td>
+          <button
+            className="edit-btn"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents row click event
+              setEditingClient(client);
+              setShowPopup(true); // Open the edit popup
+            }}
+          >
+            Edit
+          </button>
+          <button className="delete-btn" onClick={() => handleDelete(client.id)}>
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="5" style={{ textAlign: "center", padding: "15px", color: "#888" }}>
+        No clients found
+      </td>
+    </tr>
+  )}
+</tbody>
+
             </table>
           )}
         </div>
