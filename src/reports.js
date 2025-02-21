@@ -194,7 +194,7 @@ const Reports = () => {
         {reportType === "outstanding" && <td>${Number(data.totalowed || 0).toFixed(2)}</td>}
         {reportType === "overall" && (
           <>
-            <td>${Number(data.invoices || 0).toFixed(2)}</td>
+            <td>{Number(data.invoices || 0).toFixed(2)}</td>
             <td>${Number(data.totalowed || 0).toFixed(2)}</td>
             <td>${Number(data.totalpaid || 0).toFixed(2)}</td>
           </>
@@ -224,7 +224,7 @@ const Reports = () => {
         )}
         {reportType === "overall" && (
           <>
-            <td><strong>${reportData.reduce((sum, data) => sum + Number(data.invoices || 0), 0).toFixed(2)}</strong></td>
+            <td><strong>{reportData.reduce((sum, data) => sum + Number(data.invoices || 0), 0).toFixed(2)}</strong></td>
             <td><strong>${reportData.reduce((sum, data) => sum + Number(data.totalowed || 0), 0).toFixed(2)}</strong></td>
             <td><strong>${reportData.reduce((sum, data) => sum + Number(data.totalpaid || 0), 0).toFixed(2)}</strong></td>
           </>
