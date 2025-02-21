@@ -7,12 +7,13 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  width: calc(100% - 240px);
-  margin-left: 240px;
+  width: 100% ! important; /* ✅ Fix: Ensure full screen width */
+  margin-left: 0 ! important; /* ✅ Fix: Prevent forced left margin */
   padding: 80px 20px;
   background-color: #f8f9fa;
   overflow-x: hidden;
 }
+
 
 /* ✅ Responsive Fix for Mobile */
 @media (max-width: 1024px) {
@@ -32,25 +33,27 @@
   border-radius: 15px;
   display: flex;
   justify-content: center;
-  width: 100%;
-  max-width: 1500px;
-  margin: 0 auto;
+  width: 95% ! important;
+  max-width: 95% ! important; /* ✅ Reduce max width */
+  margin: 1% ! important; /* ✅ Center horizontally */
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
 }
+
 
 /* ========================= */
 /* 📌 Content Box (White Box) */
 /* ========================= */
 .content-box {
   background: white;
-  padding: 30px;
+  padding: 40px;
   border-radius: 12px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
-  width: 100%;
-  max-width: 1400px;
-  overflow-x: auto; /* ✅ Enables scrolling on smaller screens */
-  margin: 0 auto;
+  width: 100% ! important; /* ✅ Allow more flexibility */
+  max-width: 100% ! important; /* ✅ Reduce max width */
+  overflow-x: auto;
+  margin: -2% ! important; /* ✅ Center horizontally */
 }
+
 
 /* ✅ Mobile Fix: Make Content Box More Flexible */
 @media (max-width: 1024px) {
