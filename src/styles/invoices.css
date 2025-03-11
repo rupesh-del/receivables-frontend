@@ -254,3 +254,7 @@
     min-width: 600px;
   }
 }
+#invoiceElement {
+  width: 100%;
+  max-width: 100%;
+}

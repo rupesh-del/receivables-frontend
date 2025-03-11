@@ -256,28 +256,33 @@ const exportSelectedInvoices = () => {
     document.body.appendChild(invoiceElement);
 
     html2canvas(invoiceElement, {
-      scale: 2, // ✅ Keeps high quality
-      backgroundColor: "#ffffff", // ✅ Ensures no transparency issues
-      useCORS: true, // ✅ Loads external images properly
+      scale: 3, // ✅ High resolution for clarity
+      backgroundColor: "#ffffff", // ✅ Prevents transparency issues
+      useCORS: true, // ✅ Ensures images load correctly
+      width: invoiceElement.scrollWidth, // ✅ Captures full width
     }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
     
-      // ✅ Ensure PDF is Letter-Sized (8.5 x 11 inches)
+      // ✅ Create a Letter-Sized PDF (8.5 x 11 inches) in Portrait Mode
       const pdf = new jsPDF({ format: "letter", unit: "in", orientation: "portrait" });
     
-      const pdfWidth = 8.5; // Letter Width (inches)
-      const pdfHeight = 11; // Letter Height (inches)
+      const pdfWidth = 8.5; // Letter Page Width
+      const pdfHeight = 11; // Letter Page Height
     
-      const imgWidth = pdfWidth - 0.5; // ✅ Keeps small margin
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let imgWidth = pdfWidth - 0.5; // ✅ Keep slight margin
+      let imgHeight = (canvas.height * imgWidth) / canvas.width; // ✅ Maintain aspect ratio
     
-      // ✅ Ensure Image Fits Within PDF Bounds
-      const yOffset = (pdfHeight - imgHeight) / 2; // Centers vertically
+      // ✅ Force contents to take up more width (stretch slightly if needed)
+      if (imgHeight > pdfHeight) {
+        imgHeight = pdfHeight; // Fit within height
+        imgWidth = (canvas.width * imgHeight) / canvas.height; // Adjust width proportionally
+      }
     
-      pdf.addImage(imgData, "PNG", 0.25, yOffset, imgWidth, imgHeight);
+      // ✅ Adjust positioning to avoid white space
+      pdf.addImage(imgData, "PNG", 0.25, 0, imgWidth, imgHeight);
       pdf.save(`Invoice_${invoice.invoice_number}.pdf`);
-      console.log("✅ PDF Successfully Saved with Image!");
-
+      console.log("✅ PDF Successfully Saved with Full Width!");
+        
       document.body.removeChild(invoiceElement);
     });
   });
