@@ -17,6 +17,7 @@ const Clients = () => {
   });
 
   const navigate = useNavigate();
+  const [password, setPassword] = useState("");
   const API_URL = "https://receivables-api.onrender.com/clients";
 
   // ✅ Fetch Clients from Backend
@@ -46,12 +47,24 @@ const fetchClients = () => {
   fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
-      console.log("Updated Clients:", data);
+      console.log("🔄 Fetching Updated Clients:", data); // ✅ Check if IDs exist
+      if (!Array.isArray(data)) {
+        console.error("⚠️ API Response is not an array:", data);
+        return;
+      }
+      
+      // Check if all clients have IDs before updating state
+      const missingIds = data.filter(client => !client.id);
+      if (missingIds.length > 0) {
+        console.warn("⚠️ Some clients are missing IDs:", missingIds);
+      }
+
       setClients(data);
       setFilteredClients(data);
     })
-    .catch((err) => console.error("Error fetching clients:", err));
+    .catch((err) => console.error("❌ Error fetching clients:", err));
 };
+
 const addPayment = (newPayment) => {
   fetch("/payments", {
     method: "POST",
@@ -100,19 +113,26 @@ const addInvoice = (newInvoice) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newClient),
         })
-          .then(() => {
+          .then((res) => res.json()) // ✅ Ensure response is processed
+          .then((updatedClient) => {
+            console.log("✅ Updated Client Response:", updatedClient); // ✅ Debugging log
+  
             setClients((prevClients) =>
               prevClients.map((client) =>
-                client.id === editingClient.id ? newClient : client
+                client.id === editingClient.id
+                  ? { ...updatedClient, id: editingClient.id } // ✅ Ensure `id` is kept
+                  : client
               )
             );
             setFilteredClients((prevClients) =>
               prevClients.map((client) =>
-                client.id === editingClient.id ? newClient : client
+                client.id === editingClient.id
+                  ? { ...updatedClient, id: editingClient.id } // ✅ Ensure `id` is kept
+                  : client
               )
             );
           })
-          .catch((err) => console.error("Error updating client:", err));
+          .catch((err) => console.error("❌ Error updating client:", err));
       } else {
         fetch(API_URL, {
           method: "POST",
@@ -124,14 +144,29 @@ const addInvoice = (newInvoice) => {
             setClients([...clients, data]);
             setFilteredClients([...clients, data]);
           })
-          .catch((err) => console.error("Error adding client:", err));
+          .catch((err) => console.error("❌ Error adding client:", err));
       }
-
+  
       setNewClient({ full_name: "", address: "", contact: "" });
       setEditingClient(null);
       setShowPopup(false);
     }
+  };  
+
+  const requestPassword = (action, client) => {
+    const userPassword = prompt("Enter your password:");
+    if (userPassword === "rcsadmin") { // Replace with your actual password logic
+      if (action === "edit") {
+        setEditingClient(client);
+        setShowPopup(true);
+      } else if (action === "delete") {
+        handleDelete(client.id);
+      }
+    } else {
+      alert("Incorrect password! Access denied.");
+    }
   };
+  
 
   // ✅ Delete Client
   const handleDelete = (id) => {
@@ -190,32 +225,39 @@ const addInvoice = (newInvoice) => {
 
 <tbody>
   {filteredClients.length > 0 ? (
-    filteredClients.map((client) => (
-      <tr key={client.id} onClick={() => handleClientClick(client.id)}>
-        <td>{client.full_name}</td>
-        <td>{client.address}</td>
-        <td>{client.contact}</td>
-        <td style={{ fontWeight: "bold", color: Number(client.balance) < 0 ? "red" : "green" }}>
-  ${!isNaN(Number(client.balance)) ? Number(client.balance).toFixed(2) : "0.00"}
-</td>
-
-        <td>
-          <button
-            className="edit-btn"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevents row click event
-              setEditingClient(client);
-              setShowPopup(true); // Open the edit popup
-            }}
-          >
-            Edit
-          </button>
-          <button className="delete-btn" onClick={() => handleDelete(client.id)}>
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))
+    filteredClients.map((client) => {
+      if (!client.id) {
+        console.warn("Missing client ID:", client);
+      }
+      return (
+        <tr key={client.id || Math.random()} onClick={() => handleClientClick(client.id)}>
+          <td>{client.full_name}</td>
+          <td>{client.address}</td>
+          <td>{client.contact}</td>
+          <td style={{ fontWeight: "bold", color: Number(client.balance) < 0 ? "red" : "green" }}>
+            ${!isNaN(Number(client.balance)) ? Number(client.balance).toFixed(2) : "0.00"}
+          </td>
+          <td>
+            <button className="edit-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                requestPassword("edit", client);
+              }}
+            >
+              Edit
+            </button>
+            <button className="delete-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                requestPassword("delete", client);
+              }}
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      );
+    })
   ) : (
     <tr>
       <td colSpan="5" style={{ textAlign: "center", padding: "15px", color: "#888" }}>
@@ -224,7 +266,6 @@ const addInvoice = (newInvoice) => {
     </tr>
   )}
 </tbody>
-
             </table>
           )}
         </div>

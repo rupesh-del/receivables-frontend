@@ -7,16 +7,15 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Darker overlay for better focus */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(5px); /* ✅ Slight blur for a modern look */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(5px);
+  overflow-y: auto; /* ✅ Allows scrolling when modal content is long */
 }
+
 
 /* ✅ Show Modal with Smooth Animation */
 .modal-overlay.active {
@@ -30,7 +29,9 @@
 .modal-content {
   background: #fff;
   width: 420px;
-  padding: 25px;
+  max-width: 90%;
+  max-height: 80vh; /* ✅ Prevents overflow on smaller screens */
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -38,7 +39,16 @@
   animation: fadeIn 0.3s ease-in-out;
   transform: scale(0.95);
   opacity: 0;
+  overflow-y: auto; /* ✅ Enables scrolling inside the modal */
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.payment-list {
+  max-height: 250px; /* ✅ Prevents the list from overflowing */
+  overflow-y: auto; /* ✅ Enables scrolling */
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
 }
 
 /* ✅ Smooth fade-in effect */
@@ -104,7 +114,21 @@
 }
 
 /* ✅ Input & Select Styling */
-.modal-content select,
+.modal-content select {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f8f9fa;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  appearance: none; /* ✅ Remove default arrow for custom styling */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
 .modal-content input {
   width: 100%;
   padding: 10px;
@@ -115,7 +139,12 @@
   background: #f8f9fa;
   outline: none;
 }
-
+/* ✅ Add Hover & Focus Effects */
+.modal-content select:hover,
+.modal-content select:focus {
+  border-color: #007bff;
+  box-shadow: 0px 0px 6px rgba(0, 123, 255, 0.4);
+}
 /* ✅ Highlighted border on focus */
 .modal-content select:focus,
 .modal-content input:focus {
@@ -129,6 +158,110 @@
 .modal-content input {
   margin-bottom: 15px;
 }
+/* ✅ Mode of Payment Section */
+.payment-mode-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* ========================= */
+/* 📌 invoice layouts */
+/* ========================= */
+
+/* ✅ Styled Invoice Dropdown */
+.invoice-dropdown {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  appearance: none; /* ✅ Removes default dropdown arrow */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+/* ✅ Hover & Focus Effects */
+.invoice-dropdown:hover,
+.invoice-dropdown:focus {
+  border-color: #007bff;
+  box-shadow: 0px 0px 6px rgba(0, 123, 255, 0.4);
+}
+
+/* ✅ Dropdown Wrapper for Custom Arrow */
+.invoice-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+/* ✅ Custom Arrow */
+.invoice-dropdown-container::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #666;
+  pointer-events: none;
+}
+
+/* ========================= */
+/* 📌 Payment layouts */
+/* ========================= */
+
+/* ✅ Modern Payment Mode Buttons */
+/* ✅ Styled Payment Mode Dropdown */
+.payment-mode-dropdown {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  appearance: none; /* ✅ Removes default dropdown arrow */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+/* ✅ Hover & Focus Effects */
+.payment-mode-dropdown:hover,
+.payment-mode-dropdown:focus {
+  border-color: #007bff;
+  box-shadow: 0px 0px 6px rgba(0, 123, 255, 0.4);
+}
+
+/* ✅ Dropdown Wrapper for Custom Arrow */
+.payment-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+/* ✅ Custom Arrow */
+.payment-dropdown-container::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #666;
+  pointer-events: none;
+}
 
 /* ========================= */
 /* 📌 Buttons Styling */
@@ -140,7 +273,6 @@
   gap: 10px;
 }
 
-/* ✅ Add Payment Button */
 .add-payment-btn {
   background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
@@ -158,7 +290,6 @@
   transform: scale(1.03);
 }
 
-/* ✅ Submit Payment Button */
 .submit-payment-btn {
   background: linear-gradient(135deg, #28a745, #218838);
   color: white;
@@ -175,6 +306,36 @@
   background: linear-gradient(135deg, #218838, #1e7e34);
   transform: scale(1.03);
 }
+
+.client-results {
+  position: relative; /* ✅ Ensures dropdown stays inside the modal */
+  top: auto;
+  left: auto;
+  width: 90%; /* ✅ Matches input field width */
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 180px; /* ✅ Ensures it doesn’t get too large */
+  overflow-y: auto; /* ✅ Enables scrolling inside dropdown */
+  list-style: none;
+  padding: 0;
+  margin-top: 5px; /* ✅ Proper spacing */
+  z-index: 99999 !important; /* ✅ Forces it above the modal */
+  border-radius: 6px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.client-results li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s ease-in-out;
+}
+
+.client-results li:hover {
+  background: #f1f1f1;
+}
+
 
 /* ========================= */
 /* 📌 Cancel Button */

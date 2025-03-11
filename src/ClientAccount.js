@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./styles/ClientAccount.css";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import InvoiceModal from "./NewPaymentModal"; // ✅ Import Invoice Modal
+import PaymentModal from "./NewInvoiceModal"; // ✅ Import Payment Modal
+
 
 const ClientAccount = () => {
   const { clientId } = useParams();
@@ -13,8 +16,10 @@ const ClientAccount = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  
+
   // ✅ Fetch Client Details
   useEffect(() => {
     const fetchClient = async () => {

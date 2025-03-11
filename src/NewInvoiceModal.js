@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./styles/NewInvoiceModal.css";
 
-const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients }) => {
+const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients, }) => {
   console.log("🟢 NewInvoiceModal Rendered | isOpen:", isOpen);
 
   // ✅ Initial State
   const initialInvoice = {
-    client_id: "",
+    client_id: "", // ✅ No more auto-filling with clientId
+    client_name: "", // ✅ No pre-filled client name
     invoice_number: generateInvoiceNumber(),
     item: "",
     amount: "",
     due_date: "",
   };
-
+  
+  
   const [invoices, setInvoices] = useState([initialInvoice]);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ Track search input per invoice
+  const [filteredClients, setFilteredClients] = useState([]); // ✅ Store matched clients
+  const [selectedClient, setSelectedClient] = useState(null); // ✅ Chosen client
 
   useEffect(() => {
     console.log("📢 Modal Visibility Changed | isOpen:", isOpen);
@@ -24,6 +29,18 @@ const NewInvoiceModal = ({ isOpen, onClose, onSubmit, clients }) => {
       setError(""); // ✅ Clear errors
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredClients([]); // ✅ Clear results if empty
+    } else {
+      const matches = clients.filter(client =>
+        client.full_name.toLowerCase().includes(searchQuery.toLowerCase()) // ✅ Match dynamically
+      );
+      setFilteredClients(matches);
+    }
+  }, [searchQuery, clients]);
+  
 
   // ✅ Generate Unique Invoice Number
   function generateInvoiceNumber() {
@@ -107,6 +124,41 @@ const handleSubmit = async (e) => {
   }
 };
 
+const handleSearch = (index, query) => {
+  if (!clients || !Array.isArray(clients) || clients.length === 0) {
+    console.warn("❌ Clients data is not available yet. Skipping search.");
+    return; // ✅ Prevents running filter on an empty or undefined array
+  }
+
+  setInvoices(prevInvoices =>
+    prevInvoices.map((invoice, i) =>
+      i === index ? { ...invoice, client_name: query } : invoice
+    )
+  );
+
+  if (query.trim() === "") {
+    setFilteredClients([]); // ✅ Clear results if empty
+    return;
+  }
+
+  const matches = clients.filter(client =>
+    client.full_name.toLowerCase().includes(query.toLowerCase())
+  );
+  setFilteredClients(matches);
+};
+
+
+const selectClient = (index, client) => {
+  setInvoices(prevInvoices =>
+    prevInvoices.map((invoice, i) =>
+      i === index
+        ? { ...invoice, client_id: client.id, client_name: client.full_name }
+        : invoice
+    )
+  );
+  setFilteredClients([]); // ✅ Hide dropdown after selection
+};
+
 
   return (
     <div className="modal-overlay">
@@ -117,14 +169,34 @@ const handleSubmit = async (e) => {
         <form onSubmit={handleSubmit}>
           {invoices.map((invoice, index) => (
             <div key={index} className="invoice-group">
-              <select name="client_id" value={invoice.client_id} onChange={(e) => handleChange(index, e)}>
-                <option value="">Select Client</option>
-                {clients.map((client) => (
-                  <option key={client.id} value={client.id}>
-                    {client.full_name} ({client.address})
-                  </option>
-                ))}
-              </select>
+{/* ✅ Client Search Input (Per Invoice) */}
+<input
+  type="text"
+  placeholder="Search Client by Name"
+  value={invoices[index].client_name || ""}
+  onChange={(e) => handleSearch(index, e.target.value)}
+/>
+
+
+{/* ✅ Display Search Results (Only for the Active Invoice) */}
+{filteredClients.length > 0 && (
+  <ul className="client-results">
+    {filteredClients.map((client) => (
+      <li key={client.id} onClick={() => selectClient(index, client)}>
+        {client.full_name} ({client.address})
+      </li>
+    ))}
+  </ul>
+)}
+
+
+{/* ✅ Show Selected Client (Read-Only) */}
+{selectedClient && (
+  <p>
+    <strong>Selected Client:</strong> {selectedClient.full_name}  
+    <button type="button" onClick={() => setSelectedClient(null)}>❌ Change</button>
+  </p>
+)}
 
               <input type="text" name="invoice_number" value={invoice.invoice_number} readOnly />
               <input type="text" name="item" placeholder="Item Description" value={invoice.item} onChange={(e) => handleChange(index, e)} />
