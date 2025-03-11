@@ -341,20 +341,25 @@
 /* 📌 Cancel Button */
 /* ========================= */
 .cancel-btn {
-  display: block;
-  margin: 15px auto 0;
+  display: inline-block;
+  margin: 0;
+  padding: 12px 20px;
   font-size: 14px;
   font-weight: bold;
-  background: none;
-  color: #666;
-  border: none;
+  background: #dc3545; /* ✅ Constant Red Background */
+  color: white; /* ✅ White Text */
+  border: 2px solid #dc3545; /* ✅ Red Border */
+  border-radius: 6px; /* ✅ Rounded Corners */
   cursor: pointer;
-  transition: color 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
+/* ✅ Optional Hover Effect (Keeps it Red but Slightly Darker) */
 .cancel-btn:hover {
-  color: #000;
+  background: #b52a3a; /* ✅ Darker Red on Hover */
+  border-color: #b52a3a;
 }
+
 
 /* ========================= */
 /* 📌 Responsive Design */

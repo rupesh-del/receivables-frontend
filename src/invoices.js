@@ -180,80 +180,104 @@ const exportSelectedInvoices = () => {
     const balanceDue = invoice.amount - totalPaid;
 
     const invoiceHtml = `
-      <div style="padding:20px; font-family:sans-serif;">
-        <div style="display:flex;justify-content:space-between;">
-          <div>
-            <h2>RC'S TOP-UP & BILLING ENTITY</h2>
-            <p>22 Belle Plaine<br/>Wakenaam 3<br/>5926627987</p>
-          </div>
-          <div style="text-align:right;">
-            <h1 style="color:green;">RC$</h1>
-          </div>
-        </div>
+      <div style="padding:40px; font-family:sans-serif; max-width: 800px; margin:auto;">
         
-        <div style="margin-top:20px;">
-          <strong>${client.full_name}</strong><br/>
-          <div>Invoice Number: ${invoice.invoice_number}</div>
-          <div>Date of Issue: ${new Date(invoice.date_created).toLocaleDateString()}</div>
-          <div>Due Date: ${new Date(invoice.due_date).toLocaleDateString()}</div>
-          <div style="margin-top:10px;"><strong>Amount Due (GYD): $${balanceDue.toFixed(2)}</strong></div>
+        <!-- ✅ Company Header & Logo -->
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2 style="margin:0;">RC'S TOP-UP & BILLING ENTITY</h2>
+            <p style="margin:0;">22 Belle Plaine<br/>Wakenaam 3<br/>5926627987</p>
+          </div>
+          <div>
+            <img src="${window.location.origin}/logo.png" alt="Company Logo" style="height:80px;">
+          </div>
         </div>
 
-        <table style="width:100%;margin-top:20px;border-collapse:collapse;">
+        <!-- ✅ Client & Invoice Details -->
+        <div style="margin-top:20px; display:flex; justify-content:space-between;">
+          <div>
+            <strong>${client.full_name}</strong>
+          </div>
+          <div style="text-align:right;">
+            <table>
+              <tr><td><strong>Invoice Number:</strong></td><td>${invoice.invoice_number}</td></tr>
+              <tr><td><strong>Date of Issue:</strong></td><td>${new Date(invoice.date_created).toLocaleDateString()}</td></tr>
+              <tr><td><strong>Due Date:</strong></td><td>${new Date(invoice.due_date).toLocaleDateString()}</td></tr>
+              <tr style="color:green; font-size:16px;"><td><strong>Amount Due (GYD):</strong></td><td><strong>$${balanceDue.toFixed(2)}</strong></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- ✅ Invoice Table -->
+        <table style="width:100%; margin-top:20px; border-collapse:collapse;">
           <thead>
-            <tr style="border-bottom:1px solid green;">
-              <th align="left">Description</th>
-              <th align="right">Amount</th>
+            <tr style="border-bottom:2px solid green;">
+              <th align="left" style="padding:8px;">Description</th>
+              <th align="right" style="padding:8px;">Rate</th>
+              <th align="center" style="padding:8px;">Qty</th>
+              <th align="right" style="padding:8px;">Line Total</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>${invoice.item || 'N/A'}</td>
-              <td align="right">$${Number(invoice.amount).toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>Subtotal</td>
-              <td align="right">$${Number(invoice.amount).toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>Tax</td>
-              <td align="right">$0.00</td>
-            </tr>
-            <tr style="border-top:1px solid #ddd;">
-              <td><strong>Total</strong></td>
-              <td align="right"><strong>$${Number(invoice.amount).toFixed(2)}</strong></td>
-            </tr>
-            <tr>
-              <td>Amount Paid</td>
-              <td align="right">$${totalPaid.toFixed(2)}</td>
-            </tr>
-            <tr style="color:green;font-weight:bold;">
-              <td>Amount Due (GYD)</td>
-              <td align="right">$${balanceDue.toFixed(2)}</td>
+              <td style="padding:8px;">${invoice.item || 'N/A'}</td>
+              <td align="right" style="padding:8px;">$${Number(invoice.amount).toFixed(2)}</td>
+              <td align="center" style="padding:8px;">1</td>
+              <td align="right" style="padding:8px;">$${Number(invoice.amount).toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
 
-        <div style="margin-top:30px;font-size:12px;">
+        <!-- ✅ Price Breakdown -->
+        <div style="margin-top:20px; text-align:right;">
+          <table style="width:100%; border-collapse:collapse;">
+            <tr><td><strong>Subtotal</strong></td><td align="right">$${Number(invoice.amount).toFixed(2)}</td></tr>
+            <tr><td><strong>Tax</strong></td><td align="right">$0.00</td></tr>
+            <tr style="border-top:2px solid #ddd;"><td><strong>Total</strong></td><td align="right"><strong>$${Number(invoice.amount).toFixed(2)}</strong></td></tr>
+            <tr><td><strong>Amount Paid</strong></td><td align="right">$${totalPaid.toFixed(2)}</td></tr>
+            <tr style="color:green; font-size:16px;"><td><strong>Amount Due (GYD)</strong></td><td align="right"><strong>$${balanceDue.toFixed(2)}</strong></td></tr>
+          </table>
+        </div>
+
+        <!-- ✅ Terms & Conditions -->
+        <div style="margin-top:30px; font-size:12px;">
           <strong>Terms</strong><br/>
           Kindly make all Cheques payable in the company's name.<br/>
           The terms of this invoice are valid for 30 Days.<br/>
           This company reserves the right to charge interest as it sees fit for long outstanding accounts.
         </div>
+
       </div>
     `;
 
+    // ✅ Convert to PDF with Letter Size (8.5 x 11 inches)
     const invoiceElement = document.createElement("div");
     invoiceElement.innerHTML = invoiceHtml;
     document.body.appendChild(invoiceElement);
 
-    html2canvas(invoiceElement, { scale: 2 }).then(canvas => {
+    html2canvas(invoiceElement, {
+      scale: 2, // ✅ Keeps high quality
+      backgroundColor: "#ffffff", // ✅ Ensures no transparency issues
+      useCORS: true, // ✅ Loads external images properly
+    }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    
+      // ✅ Ensure PDF is Letter-Sized (8.5 x 11 inches)
+      const pdf = new jsPDF({ format: "letter", unit: "in", orientation: "portrait" });
+    
+      const pdfWidth = 8.5; // Letter Width (inches)
+      const pdfHeight = 11; // Letter Height (inches)
+    
+      const imgWidth = pdfWidth - 0.5; // ✅ Keeps small margin
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    
+      // ✅ Ensure Image Fits Within PDF Bounds
+      const yOffset = (pdfHeight - imgHeight) / 2; // Centers vertically
+    
+      pdf.addImage(imgData, "PNG", 0.25, yOffset, imgWidth, imgHeight);
       pdf.save(`Invoice_${invoice.invoice_number}.pdf`);
+      console.log("✅ PDF Successfully Saved with Image!");
+
       document.body.removeChild(invoiceElement);
     });
   });

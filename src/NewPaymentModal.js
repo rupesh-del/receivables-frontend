@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./styles/NewPaymentModal.css";
+import Select from "react-select";
 
 const NewPaymentModal = ({ isOpen, onClose, selectedInvoices = [] }) => {
   const [clients, setClients] = useState([]);
@@ -97,42 +98,53 @@ const NewPaymentModal = ({ isOpen, onClose, selectedInvoices = [] }) => {
       alert("Please enter a valid amount and select an invoice.");
       return;
     }
-
-    setPayments((prev) => [
+  
+    // Check if invoice already exists in payments
+    const existingPaymentIndex = payments.findIndex(p => p.invoice_id === Number(selectedInvoice));
+  
+    if (existingPaymentIndex !== -1) {
+      alert("This invoice has already been added for payment.");
+      return;
+    }
+  
+    // Add new payment entry
+    setPayments(prev => [
       ...prev,
-      { invoice_id: Number(selectedInvoice), mode, amount: parseFloat(amount) },
+      {
+        invoice_id: Number(selectedInvoice),
+        mode,
+        amount: parseFloat(amount)
+      }
     ]);
-
+  
+    // Reset input fields for next entry
     setSelectedInvoice("");
     setAmount("");
   };
+  
 
   // ✅ Submit Payments to Backend
   const submitPayments = async () => {
-    if (!payments.length) {
-      alert("Please add at least one payment.");
+    if (payments.length === 0) {
+      alert("Please add at least one payment before submitting.");
       return;
     }
-
+  
     try {
       const response = await fetch("https://receivables-api.onrender.com/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payments.map(payment => ({
-          invoice_id: payment.invoice_id,
-          mode: payment.mode,
-          amount: parseFloat(payment.amount),
-        }))),
+        body: JSON.stringify(payments),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         console.error("❌ API Error:", result);
         alert(`Error: ${result.error || "Failed to submit payments."}`);
         return;
       }
-
+  
       alert("Payments successfully added!");
       handleClose();
     } catch (error) {
@@ -140,7 +152,17 @@ const NewPaymentModal = ({ isOpen, onClose, selectedInvoices = [] }) => {
       alert("A network error occurred while adding payments.");
     }
   };
-
+  
+  const refreshInvoices = async () => {
+    try {
+      const res = await fetch("https://receivables-api.onrender.com/invoices");
+      const updatedInvoices = await res.json();
+      setAllInvoices(updatedInvoices); // ✅ Update state with new invoices
+    } catch (err) {
+      console.error("❌ Error refreshing invoices:", err);
+    }
+  };
+  
   // ✅ Reset Modal on Close
   const handleClose = () => {
     setSelectedClient("");
@@ -148,92 +170,103 @@ const NewPaymentModal = ({ isOpen, onClose, selectedInvoices = [] }) => {
     setMode("Cash");
     setAmount("");
     setPayments([]);
+  
+    refreshInvoices(); // ✅ Refresh invoices after closing modal
+  
     onClose();
   };
+  
+  const clientOptions = clients.map(({ id, full_name }) => ({
+    value: id,
+    label: full_name,
+  }));
 
+  const removePayment = (index) => {
+    setPayments(prev => prev.filter((_, i) => i !== index));
+  };
+  
   return isOpen ? (
-    <div className="popup">
-      <div className="popup-content">
+    <div className="modal-overlay active">
+      <div className="modal-content">
         <h3>New Payment</h3>
   
-        {/* ✅ Scrollable Content Wrapper */}
         <div className="popup-body">
-          {/* ✅ Client Selection (Now Editable) */}
-          <label>Client:</label>
-          <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
-            <option value="">Select Client</option>
-            {clients.map(({ id, full_name }) => (
-              <option key={id} value={id}>
-                {full_name}
-              </option>
-            ))}
-          </select>
-  
-          {/* ✅ Auto-Filled Invoices */}
-          {payments.length > 0 && (
-            <div className="payment-list">
-              <h4>Pending Payments:</h4>
-              <ul>
-                {payments.map(({ invoice_id, mode, amount }, index) => (
-                  <li key={index}>
-                    Invoice: {invoice_id} | Mode: {mode} | Amount: 
-                    <input
-                      type="number"
-                      value={amount}
-                      onChange={(e) => updatePaymentAmount(index, e.target.value)}
-                      className="amount-input"
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* ✅ Searchable Client Lookup */}
+          <label className="modal-label">Client:</label>
+          <Select
+            options={clientOptions}
+            value={clientOptions.find((option) => option.value === selectedClient)}
+            onChange={(selectedOption) => setSelectedClient(selectedOption?.value || "")}
+            placeholder="Search & Select Client"
+            isClearable
+          />
   
           {/* ✅ Invoice Selection (Filtered by Client) */}
           <label>Invoice:</label>
-          <select value={selectedInvoice} onChange={(e) => setSelectedInvoice(e.target.value)} disabled={!selectedClient || filteredInvoices.length === 0}>
-            <option value="">Select Invoice</option>
-            {filteredInvoices.map(({ id, invoice_number, amount, total_paid }) => {
-              const balanceOutstanding = amount - (total_paid || 0);
-              return (
-                <option key={id} value={id}>
-                  {invoice_number} (Remaining: ${balanceOutstanding.toFixed(2)})
-                </option>
-              );
-            })}
-          </select>
+          <select 
+          className="invoice-dropdown"
+  value={selectedInvoice} 
+  onChange={(e) => setSelectedInvoice(e.target.value)} 
+  disabled={!selectedClient || filteredInvoices.length === 0}
+>
+  <option value="">Select Invoice</option>
+  {filteredInvoices.map(({ id, invoice_number, amount, total_paid }) => {
+    const balanceOutstanding = amount - (total_paid || 0);
+
+    // ✅ Check if the invoice is already added to payments
+    const isAlreadySelected = payments.some(payment => payment.invoice_id === id);
+
+    return (
+      <option key={id} value={id} disabled={isAlreadySelected}>
+        {invoice_number} (Remaining: ${balanceOutstanding.toFixed(2)}) {isAlreadySelected ? " - (Already Selected)" : ""}
+      </option>
+    );
+  })}
+</select>
   
-          {/* ✅ Payment Mode Selection */}
+          {/* ✅ Mode of Payment */}
           <label>Mode of Payment:</label>
-          <select value={mode} onChange={(e) => setMode(e.target.value)}>
-            <option value="Cash">Cash</option>
-            <option value="MMG">MMG</option>
-            <option value="Bank">Bank</option>
-            <option value="Other">Other</option>
+          <select className="payment-mode-dropdown" value={mode} onChange={(e) => setMode(e.target.value)}>
+            <option value="Cash">Cash💵</option>
+            <option value="MMG">MMG📱</option>
+            <option value="Bank">Bank🏦</option>
+            <option value="Other">Other🔃</option>
           </select>
   
-          {/* ✅ Payment Amount (Auto-filled & Editable) */}
+          {/* ✅ Payment Amount */}
           <label>Amount:</label>
           <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Enter amount" />
   
-          <button className="add-more-btn" onClick={addPayment}>
+          <button className="add-payment-btn" onClick={addPayment}>
             Add Payment
           </button>
-        </div> 
-        {/* 🔥 END of Scrollable Content Wrapper */}
-  
-        {/* ✅ Footer for buttons */}
+        </div>
+  {/* ✅ List Added Payments Before Submission */}
+{payments.length > 0 && (
+  <div className="payment-list">
+    <h4>Payments to be Submitted💵:</h4>
+    <ul>
+      {payments.map(({ invoice_id, mode, amount }, index) => (
+        <li key={index}>
+          <strong>Invoice:</strong> {invoice_id} | <strong>Mode:</strong> {mode} | <strong>Amount:</strong> ${amount}
+          <button onClick={() => removePayment(index)} className="remove-btn">❌</button>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+        {/* ✅ Footer Buttons */}
         <div className="popup-footer">
-          <button className="submit-btn" onClick={submitPayments}>
-            Submit Payments
-          </button>
-          <button className="close-btn" onClick={handleClose}>
-            Cancel
-          </button>
+{/* ✅ Footer Buttons Proper Layout */}
+<div className="modal-buttons">
+  <button className="submit-payment-btn" onClick={submitPayments}>Submit Payments✔️</button>
+  <button className="cancel-btn" onClick={handleClose}>Cancel❌</button>
+</div>
         </div>
       </div>
     </div>
-  ) : null;  
+  ) : null;
 };
 
 export default NewPaymentModal;
