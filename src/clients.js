@@ -42,52 +42,63 @@ const Clients = () => {
       });
   }, []);
 
+
 // ✅ Function to Re-fetch Clients
 const fetchClients = () => {
-  fetch(API_URL)
+  fetch("https://receivables-api.onrender.com/clients")
     .then((res) => res.json())
     .then((data) => {
-      console.log("🔄 Fetching Updated Clients:", data); // ✅ Check if IDs exist
+      console.log("🔄 Fetching Updated Clients:", data);
+
       if (!Array.isArray(data)) {
         console.error("⚠️ API Response is not an array:", data);
         return;
       }
-      
-      // Check if all clients have IDs before updating state
-      const missingIds = data.filter(client => !client.id);
-      if (missingIds.length > 0) {
-        console.warn("⚠️ Some clients are missing IDs:", missingIds);
-      }
 
-      setClients(data);
-      setFilteredClients(data);
+      // ✅ Ensure correct balances are updated
+      const updatedClients = data.map(client => ({
+        ...client,
+        balance: Number(client.balance) || 0 // Ensures balance is always a valid number
+      }));
+
+      setClients(updatedClients); // ✅ Update clients state
+      setFilteredClients(updatedClients); // ✅ Ensure table updates
     })
     .catch((err) => console.error("❌ Error fetching clients:", err));
 };
 
+
+
 const addPayment = (newPayment) => {
-  fetch("/payments", {
+  fetch("https://receivables-api.onrender.com/payments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newPayment),
   })
     .then((res) => res.json())
     .then(() => {
-      fetchClients(); // ✅ Refresh clients after adding a payment
+      console.log("✅ Payment Added, Refreshing Clients");
+      
+      setClients([]); // ✅ Force UI update
+      setTimeout(fetchClients, 1000); // ✅ Ensure table fetches the correct balance
     })
-    .catch((err) => console.error("Error adding payment:", err));
+    .catch((err) => console.error("❌ Error adding payment:", err));
 };
+
 const addInvoice = (newInvoice) => {
-  fetch("/invoices", {
+  fetch("https://receivables-api.onrender.com/invoices", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newInvoice),
   })
     .then((res) => res.json())
     .then(() => {
-      fetchClients(); // ✅ Refresh clients after adding an invoice
+      console.log("✅ Invoice Added, Refreshing Clients");
+
+      setClients([]); // ✅ Force UI update
+      setTimeout(fetchClients, 1000); // ✅ Ensure table fetches the correct balance
     })
-    .catch((err) => console.error("Error adding invoice:", err));
+    .catch((err) => console.error("❌ Error adding invoice:", err));
 };
 
   // ✅ Handle input changes
@@ -235,8 +246,8 @@ const addInvoice = (newInvoice) => {
           <td>{client.address}</td>
           <td>{client.contact}</td>
           <td style={{ fontWeight: "bold", color: Number(client.balance) < 0 ? "red" : "green" }}>
-            ${!isNaN(Number(client.balance)) ? Number(client.balance).toFixed(2) : "0.00"}
-          </td>
+  ${client.balance ? Number(client.balance).toLocaleString(undefined, { minimumFractionDigits: 2 }) : "0.00"}
+</td>
           <td>
             <button className="edit-btn"
               onClick={(e) => {
